@@ -18,4 +18,6 @@ def read_root():
 def create_user(user: USerSchema):
     user_with_id = UserDB(id=len(database) + 1, **user.model_dump())
 
+    database.append(user_with_id)
+
     return user_with_id
