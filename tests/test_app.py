@@ -43,7 +43,7 @@ def test_read_users(client):
 
 def test_update_user(client):
     response = client.put(
-        '/user/1',
+        '/users/1',
         json={
             'password': '123',
             'username': 'testusername2',
