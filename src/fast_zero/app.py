@@ -31,7 +31,7 @@ def read_users():
 @app.put('/users/{user_id}', response_model=UserPublic)
 def update_user(user_id: int, user: USerSchema):
     pass
-    ##if user_id < 1 or user_id > len(database):
+    if user_id < 1 or user_id > len(database):
         
 
     user_with_id = UserDB(id=user_id, **user.model_dump())
