@@ -79,7 +79,7 @@ def test_delete_user(client):
 
 
 def test_delete_user_should_return_not_found(client):
-    response = client.delete('/users/-666')
+    response = client.delete('/users/665')
 
     assert response.status_code == HTTPStatus.NOT_FOUND
-    assert response.json() == {'detail': 'User not found'}
+    assert response.json() == {'detail': 'User not found'}     
