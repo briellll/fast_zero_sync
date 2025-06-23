@@ -49,10 +49,8 @@ def create_user(user: USerSchema, session=Depends(get_session)):
 
 
 @app.get('/users/', response_model=UserList)
-def read_users(session: Session = Depends(get_session)):
-    user = session.scalars(
-        select(User)
-                    )
+def read_users(limit: int = 10,skip: int = 0, session: Session = Depends(get_session)):
+    user = session.scalars(select(User).limit(limit).offset(skip))
     return {'users': user}
 
 
