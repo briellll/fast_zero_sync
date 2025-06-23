@@ -1,11 +1,11 @@
 from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 
 from fast_zero.settings import Settings
 
-from sqlalchemy.orm import Session
+engine = create_engine(Settings().DATABASE_URL)  # type:ignore
 
-engine = create_engine(Settings().DATABASE_URL) # type:ignore
 
-def get_session() :
-    with Session(engine) as session :
+def get_session():
+    with Session(engine) as session:
         yield session
