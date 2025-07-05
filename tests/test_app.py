@@ -32,15 +32,12 @@ def test_read_users(client):
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {'users': []}
 
+
 def test_read_users_with_user(client):
     response = client.get('/user/')
 
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == {
-        'user': [
-
-        ]
-    }
+    assert response.json() == {'user': []}
 
 
 def test_update_user(client):
