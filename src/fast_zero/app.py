@@ -67,14 +67,10 @@ def read_user(user_id: int):
 
 
 @app.put('/users/{user_id}', response_model=UserPublic)
-def update_user(user_id: int, user: USerSchema, sesion: Session = Depends(get_session)):
+def update_user(user_id: int, user: USerSchema, session: Session = Depends(get_session)):
     ...
 
 
 @app.delete('/users/{user_id}', response_model=Message)
-def delete_user(user_id: int):
-    if user_id < 1 or user_id > len(database):
-        raise HTTPException(status_code=HTTPStatus.OK, detail='User not found')
-
-    del database[user_id - 1]
-    return {'message': 'User deleted'}
+def delete_user(user_id: int, session:Session = Depends(get_session)):
+    ...
