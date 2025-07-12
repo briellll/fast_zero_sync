@@ -27,18 +27,32 @@ def test_create_user(client):
         'id': 1,
     }
 
+
 def test_create_user_should_not_allow_duplicate_username(client, user):
     response = client.post(
         'users/',
         json={
             'username': user.username,
-            'passwords': 'password',
-            'email':'teste@teste.com'
-        },)
-    
+            'password': 'password',
+            'email': 'teste@teste.com',
+        },
+    )
     assert response.status_code == HTTPStatus.CONFLICT
     assert response.json() == {'detail': 'Username already exists'}
-    
+
+
+def test_create_user_should_not_allow_duplicate_email(client, user):
+    response = client.post(
+        'users/',
+        json={
+            'username': 'username',
+            'email': user.email,
+            'password': 'passwords',
+        },
+    )
+
+    assert response.status_code == HTTPStatus.CONFLICT
+    assert response.json() == {'detail': 'Email already exists'}
 
 
 def test_read_users(client):
@@ -72,16 +86,22 @@ def test_update_user(client, user):
     }
 
 
-def test_update_user_should_not_found(client):
+def test_delete_user_should_return_not_found__exercicio(client):
+    response = client.delete('/users/666')
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {'detail': 'User not found'}
+
+
+def test_update_user_should_return_not_found__exercicio(client):
     response = client.put(
         '/users/666',
         json={
-            'password': '123',
-            'username': 'testusername2',
-            'email': 'test@test.com',
+            'username': 'bob',
+            'email': 'bob@example.com',
+            'password': 'mynewpassword',
         },
     )
-
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert response.json() == {'detail': 'User not found'}
 
@@ -90,3 +110,4 @@ def test_delete_user(client, user):
     response = client.delete('/users/1')
 
     assert response.json() == {'message': 'User deleted successfully'}
+
