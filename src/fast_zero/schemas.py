@@ -20,7 +20,3 @@ class UserPublic(BaseModel):
 
 class UserList(BaseModel):
     users: list[UserPublic]
-
-
-class UserDB(USerSchema):
-    id: int

@@ -6,11 +6,9 @@ from sqlalchemy.orm import Session
 
 from fast_zero.database import get_session
 from fast_zero.models import User
-from fast_zero.schemas import Message, UserDB, UserList, UserPublic, USerSchema
+from fast_zero.schemas import Message, UserList, UserPublic, USerSchema
 
 app = FastAPI()
-
-database = []
 
 
 @app.get('/', status_code=HTTPStatus.OK, response_model=Message)
@@ -57,20 +55,45 @@ def read_users(
 
 
 @app.get('/user/{user_id}', response_model=UserPublic)
-def read_user(user_id: int):
-    if user_id < 1 or user_id > len(database):
+def read_user(user_id: int, session: Session = Depends(get_session)):
+    db_user = session.scalar(select(User).where(User.id == user_id))
+
+    if db_user is None:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND, detail='User not found'
         )
 
-    return database[user_id - 1]
-
 
 @app.put('/users/{user_id}', response_model=UserPublic)
-def update_user(user_id: int, user: USerSchema, session: Session = Depends(get_session)):
-    ...
+def update_user(
+    user_id: int, user: USerSchema, session: Session = Depends(get_session)
+):
+    db_user = session.scalar(select(User).where(User.id == user_id))
+
+    if db_user is None:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND, detail='User not found'
+        )
+
+    db_user.username = user.username
+    db_user.email = user.email
+    db_user.password = user.password
+
+    session.add(db_user)
+    session.commit()
+    session.refresh(db_user)
+
+    return db_user
 
 
 @app.delete('/users/{user_id}', response_model=Message)
-def delete_user(user_id: int, session:Session = Depends(get_session)):
-    ...
+def delete_user(user_id: int, session: Session = Depends(get_session)):
+    db_user = session.scalar(select(User).where(User.id == user_id))
+    if db_user is None:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND, detail='User not found'
+        )
+    session.delete(db_user)
+    session.commit()
+
+    return {'message': 'User deleted successfully'}
