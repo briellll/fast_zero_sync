@@ -62,7 +62,7 @@ def read_user(user_id: int, session: Session = Depends(get_session)):
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND, detail='User not found'
         )
-
+    return db_user
 
 
 @app.put('/users/{user_id}', response_model=UserPublic)

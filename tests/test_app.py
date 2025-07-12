@@ -18,11 +18,11 @@ def test_get_user_should_return_not_found(client):
 
 
 def test_get_user___exercicio(client, user):
-    response = client.get(f'/user/{user.id}')
+    response = client.get(f'/users/{user.id}')
 
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {
-        'username': user.name,
+        'username': user.username,
         'email': user.email,
         'id': user.id,
     }
