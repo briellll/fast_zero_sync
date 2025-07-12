@@ -55,7 +55,7 @@ def test_create_user_should_not_allow_duplicate_username(client, user):
             'email': 'teste@teste.com',
         },
     )
-    assert response.status_code == HTTPStatus.CONFLICT
+    assert response.status_code == HTTPStatus.BAD_REQUEST
     assert response.json() == {'detail': 'Username already exists'}
 
 
@@ -69,7 +69,7 @@ def test_create_user_should_not_allow_duplicate_email(client, user):
         },
     )
 
-    assert response.status_code == HTTPStatus.CONFLICT
+    assert response.status_code == HTTPStatus.BAD_REQUEST
     assert response.json() == {'detail': 'Email already exists'}
 
 

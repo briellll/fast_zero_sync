@@ -54,7 +54,7 @@ def read_users(
     return {'users': user}
 
 
-@app.get('/user/{user_id}', response_model=UserPublic)
+@app.get('/users/{user_id}', response_model=UserPublic)
 def read_user(user_id: int, session: Session = Depends(get_session)):
     db_user = session.scalar(select(User).where(User.id == user_id))
 
@@ -62,6 +62,7 @@ def read_user(user_id: int, session: Session = Depends(get_session)):
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND, detail='User not found'
         )
+
 
 
 @app.put('/users/{user_id}', response_model=UserPublic)
