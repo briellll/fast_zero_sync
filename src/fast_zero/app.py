@@ -10,6 +10,7 @@ from fast_zero.models import User
 from fast_zero.schemas import Message, Token, UserList, UserPublic, USerSchema
 from fast_zero.security import (
     create_access_token,
+    get_current_user,
     get_password_hash,
     verify_password,
 )
@@ -56,7 +57,9 @@ def create_user(user: USerSchema, session=Depends(get_session)):
 
 @app.get('/users/', response_model=UserList)
 def read_users(
-    limit: int = 10, skip: int = 0, session: Session = Depends(get_session)
+    limit: int = 10,
+    skip: int = 0,
+    session: Session = Depends(get_session),
 ):
     user = session.scalars(select(User).limit(limit).offset(skip))
     return {'users': user}
@@ -75,7 +78,10 @@ def read_user(user_id: int, session: Session = Depends(get_session)):
 
 @app.put('/users/{user_id}', response_model=UserPublic)
 def update_user(
-    user_id: int, user: USerSchema, session: Session = Depends(get_session)
+    user_id: int,
+    user: USerSchema,
+    session: Session = Depends(get_session),
+    current_user=Depends(get_current_user),
 ):
     db_user = session.scalar(select(User).where(User.id == user_id))
 
@@ -96,7 +102,11 @@ def update_user(
 
 
 @app.delete('/users/{user_id}', response_model=Message)
-def delete_user(user_id: int, session: Session = Depends(get_session)):
+def delete_user(
+    user_id: int,
+    session: Session = Depends(get_session),
+    current_user=Depends(get_current_user),
+):
     db_user = session.scalar(select(User).where(User.id == user_id))
     if db_user is None:
         raise HTTPException(
